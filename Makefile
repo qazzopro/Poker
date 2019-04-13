@@ -1,4 +1,4 @@
-CC = dcc
+CC = gcc
 
 all: Poker
 
