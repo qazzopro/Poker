@@ -7,6 +7,7 @@ struct _player {
     int hand[HAND_SIZE];
     int rank;
     int best[5];
+    int stack; 
 };
 
 typedef struct _player *Player;
@@ -17,18 +18,6 @@ struct _game {
 };
 
 typedef struct _game *Game; 
-
-typedef enum {
-    STRAIGHT_FLUSH,
-    QUADS,
-    FULL_HOUSE,
-    FLUSH,
-    STRAIGHT,
-    TRIPS,
-    TWO_PAIR,
-    PAIR,
-    HIGH_CARD
-} Ranks; 
 
 // Create a new game
 Game newGame();

@@ -21,9 +21,9 @@ Game newGame()
     for (int i = 0; i < MAX_PLAYERS; i++)
     {
         Poker->players[i] = malloc(sizeof(struct _player));
+        Poker->players[i]->stack = 1000;
         for (int j = 0; j <= 4; j++) Poker->players[i]->best[j] = -1;
     }
-    
     
     return Poker;
 }
