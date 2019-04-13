@@ -32,8 +32,7 @@ int main (void)
         printCard(Poker->players[i]->hand[1]);
         calculateHand(Poker->players[i], Poker->deck); 
         for (int j = 0; j <= 4; j++) 
-        {
-            
+        {      
             printf("%c ", values[Poker->players[i]->best[j]]);
         }
         printf("\n");

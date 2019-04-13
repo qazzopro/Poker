@@ -104,7 +104,7 @@ void calculateHand(Player player, int deck[])
                 {
                     if (cards[j] % 13 == i && cards[j] / 13 == flush)
                     {
-                        player->best[counter] = numOfCards[i];
+                        player->best[counter] = i;
                         counter++;
                         break;
                     }
@@ -126,7 +126,7 @@ void calculateHand(Player player, int deck[])
         int counter = 3;
         for (int i = 12; i >= 0; i--)
         {
-            if (numOfCards[i] != 0 && counter <= 4)
+            if (i != trips && numOfCards[i] != 0 && counter <= 4)
             {
                 player->best[counter] = i;
                 counter++;
@@ -206,6 +206,7 @@ void calculateWinner(Player players[], int community[5])
             }
             if (tiebreaker == 0) { tie[best] = 1; tie[i] = 1;}
         }
+        tiebreaker = 0;
     }
     
     printf("Player ");
