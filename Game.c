@@ -100,9 +100,9 @@ void calculateHand(Player player, int deck[])
         {
             if (numOfCards[i] >= 1)
             {
-                for (int i = 0; i <= 6; i++)
+                for (int j = 0; j <= 6; j++)
                 {
-                    if (cards[i] % 13 == i && cards[i] / 13 == flush)
+                    if (cards[j] % 13 == i && cards[j] / 13 == flush)
                     {
                         player->best[counter] = numOfCards[i];
                         counter++;
@@ -143,7 +143,8 @@ void calculateHand(Player player, int deck[])
         int high = 0;
         for (int i = 0; i <= 6; i++) 
         {
-            if (cards[i] % 13 != trips && cards[i] % 13 > high % 13) high = cards[i];
+            if (cards[i] % 13 != twopair[0] && cards[i] % 13 != twopair[1] 
+                && cards[i] % 13 > high % 13) high = cards[i];
         }
         player->best[4] = high % 13;
     }
