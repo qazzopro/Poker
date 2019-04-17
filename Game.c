@@ -5,24 +5,25 @@
 
 #include "Game.h"
 
+
+
 // Auxillary Functions
-int isFlush();
-int isStraight();
-int isQuads();
-int isTrips();
-int *isTwoPair();
+static int isFlush();
+static int isStraight();
+static int isQuads();
+static int isTrips();
+static int *isTwoPair();
 
 Game newGame() 
 {
     Game Poker = malloc(sizeof(struct _game));
-
     Poker->deck = shuffleDeck();
 
-    for (int i = 0; i < MAX_PLAYERS; i++)
+    for (int i = 0; i < PLAYERS; i++)
     {
         Poker->players[i] = malloc(sizeof(struct _player));
-        Poker->players[i]->stack = 1000;
-        for (int j = 0; j <= 4; j++) Poker->players[i]->best[j] = -1;
+        Poker->players[i]->stack = BUY_IN;
+        Poker->players[i]->action = UNOPENED;
     }
     
     return Poker;
@@ -32,7 +33,7 @@ void dealCards(Player players[], Deck deck)
 {
     int cardnum = 0;
     
-    for (int i = 0; i < MAX_PLAYERS; i++)
+    for (int i = 0; i < PLAYERS; i++)
     {
         for (int j = 0; j < HAND_SIZE; j++)
         {
@@ -182,9 +183,9 @@ void calculateHand(Player player, int deck[])
 void calculateWinner(Player players[], int community[5]) 
 {
     int best = 0;
-    int tie[MAX_PLAYERS] = {0};
+    int tie[PLAYERS] = {0};
     int tiebreaker = 0;
-    for (int i = 1; i < MAX_PLAYERS; i++) 
+    for (int i = 1; i < PLAYERS; i++) 
     {
         if (players[i]->rank > players[best]->rank) 
         {
@@ -211,7 +212,7 @@ void calculateWinner(Player players[], int community[5])
     
     printf("Player ");
     tiebreaker = 0;
-    for (int i = 0; i < MAX_PLAYERS; i++) 
+    for (int i = 0; i < PLAYERS; i++) 
     { 
         if (tie[i] != 0) 
         {
@@ -224,7 +225,7 @@ void calculateWinner(Player players[], int community[5])
     else printf("won!\n");           
 }
 
-int isFlush() 
+static int isFlush() 
 {
     for (int i = 0; i <= 3; i++)
     {
@@ -233,7 +234,7 @@ int isFlush()
     return -1;
 }
 
-int isStraight()
+static int isStraight()
 {
     for (int i = 12; i >= 4; i--) 
     {
@@ -247,7 +248,7 @@ int isStraight()
     return -1;
 } 
 
-int isQuads()
+static int isQuads()
 {
     for (int i = 12; i >= 0; i--) 
     {
@@ -258,7 +259,7 @@ int isQuads()
     return -1;
 }
 
-int isTrips()
+static int isTrips()
 {
     for (int i = 12; i >= 0; i--)
     {
@@ -269,7 +270,7 @@ int isTrips()
     return -1;
 }
 
-int *isTwoPair()
+static int *isTwoPair()
 {
     int *pairs = malloc(sizeof(int) * 3);
     pairs[0] = -1;
@@ -289,7 +290,7 @@ int *isTwoPair()
 
 void destroyGame(Game game) 
 {
-    for (int player = 0; player < MAX_PLAYERS; player++)
+    for (int player = 0; player < PLAYERS; player++)
     {
         free(game->players[player]);
     }

@@ -3,7 +3,7 @@
 
 #define DECK_SIZE 52
 #define HAND_SIZE 2
-#define MAX_PLAYERS 6
+#define PLAYERS 6
 
 typedef enum { FLOP, TURN, RIVER } Streets;
 

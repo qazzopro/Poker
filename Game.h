@@ -1,24 +1,33 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define BUY_IN 1000
+#define BIG_BLIND (BUY_IN / 100)
+#define SMALL_BLIND (BUY_IN / 200)
+
 #include "Deck.h"
 
-struct _player {
+typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD } Actions;
+
+struct _player 
+{
     int hand[HAND_SIZE];
     int rank;
     int best[5];
-    int stack; 
+    int stack;
+    Actions action; 
 };
 
 typedef struct _player *Player;
 
 struct _game {
     Deck deck;
-    Player players[MAX_PLAYERS];
+    Player players[PLAYERS];
+    int pot;
 };
 
 typedef struct _game *Game; 
-
+  
 // Create a new game
 Game newGame();
 
