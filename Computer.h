@@ -4,4 +4,8 @@
 
 #include "Game.h"
 
+// Calculate Computer's turn
+void compTurn(Player cpu, int call, int button);
+
+
 #endif

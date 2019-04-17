@@ -5,7 +5,7 @@
 
 #include "Deck.h"
 #include "Game.h"
-//#include "Computer.h"
+#include "Computer.h"
 
 static int activePlayers(Player players[]);
 static void myTurn(Player me, int call);
@@ -58,10 +58,12 @@ int main (void)
         if (button + 3 >= PLAYERS) turn -= PLAYERS;
         while (activePlayers(Poker->players) >= 2)
         {
-            if (turn == 0 && Poker->players[0]->action != FOLD) // My turn
+            if (turn == 0 && Poker->players[0]->action != FOLD)  // My turn
                 myTurn(Poker->players[0], call);                        
             
-            //else compTurn(Poker->players[turn], call);
+            else 
+                // Computer's turn
+                compTurn(Poker->players[turn], call, calculatePosition(turn, button)); 
             
             turn++; 
             if (turn == PLAYERS) turn = 0;

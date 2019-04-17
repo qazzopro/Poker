@@ -43,6 +43,13 @@ void dealCards(Player players[], Deck deck)
     }
 }
 
+int calculatePosition(int player, int button)
+{
+    int position = player - button;
+    if (position < 0) position += PLAYERS;
+    return position;
+}
+
 int numOfCards[13];
 int suitOfCards[4];
 

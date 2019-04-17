@@ -5,6 +5,14 @@
 #define BIG_BLIND (BUY_IN / 100)
 #define SMALL_BLIND (BUY_IN / 200)
 
+// Positions
+#define BUTTON  0
+#define SB      1
+#define BB      2
+#define UTG     3
+#define HJ      4
+#define CO      5
+
 #include "Deck.h"
 
 typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD } Actions;
@@ -36,6 +44,8 @@ void dealCards(Player players[], Deck deck);
 
 // Print the community cards on specific street
 void printCommunity(int deck[], Streets street);
+
+int calculatePosition(int player, int button);
 
 // Calculate the value of current hand
 void calculateHand(Player player, int cards[]);

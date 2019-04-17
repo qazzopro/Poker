@@ -1,10 +1,13 @@
-CC = gcc -g
+CC = dcc -g
 
 all: Poker
 
-Poker: Poker.c Game.o Deck.o 
-Deck.o: Deck.h Deck.c
+Poker: Poker.c Computer.o Game.o Deck.o 
+Computer.o: Computer.h Computer.c
 Game.o: Game.h Game.c
+Deck.o: Deck.h Deck.c
+
+
 
 .phony: clean
 clean:
