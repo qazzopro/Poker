@@ -58,7 +58,7 @@ int main (void)
         if (button + 3 >= PLAYERS) turn -= PLAYERS;
         while (activePlayers(Poker->players) >= 2)
         {
-            if (turn == 0 && Poker->players) // My turn
+            if (turn == 0 && Poker->players[0]->action != FOLD) // My turn
                 myTurn(Poker->players[0], call);                        
             
             //else compTurn(Poker->players[turn], call);
