@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
+#include <assert.h>
 
 #include "Game.h"
 
@@ -18,12 +20,24 @@ Game newGame()
 {
     Game Poker = malloc(sizeof(struct _game));
     Poker->deck = shuffleDeck();
-
+    srand(time(0));
+    
     for (int i = 0; i < PLAYERS; i++)
     {
         Poker->players[i] = malloc(sizeof(struct _player));
         Poker->players[i]->stack = BUY_IN;
         Poker->players[i]->action = UNOPENED;
+        if (i == 0) 
+            Poker->players[i]->type = PLAYER;
+        else 
+        {
+            int type = (rand() % (TYPES + 1));
+            if (type == TYPES)
+                Poker->players[i]->type = REGS + (type % 3);
+            else 
+                Poker->players[i]->type = type + 1;
+            assert(Poker->players[i]->type != PLAYER);
+        }  
     }
     
     return Poker;
@@ -76,7 +90,6 @@ void calculateHand(Player player, int deck[])
     int quads = isQuads();
     int trips = isTrips();
     int *twopair = isTwoPair();
-    //for (int i = 0; i <= 12; i++) printf("%d\n", numOfCards[i]); // For debugging
     
     if (flush != -1 && straight != -1 && flush == straight) 
     {

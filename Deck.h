@@ -5,7 +5,7 @@
 #define HAND_SIZE 2
 #define PLAYERS 6
 
-typedef enum { FLOP, TURN, RIVER } Streets;
+typedef enum { PREFLOP, FLOP, TURN, RIVER } Streets;
 
 typedef int * Deck;
 

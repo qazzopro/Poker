@@ -13,9 +13,26 @@
 #define HJ      4
 #define CO      5
 
+#define TYPES 9
+#define REGS 5
+
 #include "Deck.h"
 
-typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD } Actions;
+typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD, ALL_IN } Actions;
+
+typedef enum { 
+    PLAYER, 
+    TIGHT_PASSIVE_FISH, 
+    LOOSE_PASSIVE_FISH, 
+    PASSIVE_WHALE, 
+    NIT, 
+    TIGHT_REG, 
+    STANDARD_REG,
+    LOOSE_REG,
+    AGGRO_FISH,
+    AGGRO_WHALE,
+} PlayerType;
+     
 
 struct _player 
 {
@@ -23,7 +40,8 @@ struct _player
     int rank;
     int best[5];
     int stack;
-    Actions action; 
+    Actions action;
+    PlayerType type; 
 };
 
 typedef struct _player *Player;

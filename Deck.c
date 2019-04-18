@@ -40,8 +40,6 @@ Deck shuffleDeck()
     }
     
     
-    // Random seed for differing result for every use of function
-    srand(time(NULL));
     for (int i = DECK_SIZE - 1; i > 0; i--) 
     {
         // Pick a random index from 0..i
