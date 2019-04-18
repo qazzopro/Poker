@@ -27,6 +27,8 @@ Game newGame()
         Poker->players[i] = malloc(sizeof(struct _player));
         Poker->players[i]->stack = BUY_IN;
         Poker->players[i]->action = UNOPENED;
+        Poker->raised = malloc(sizeof(int));
+        Poker->raised[0] = 0;
         if (i == 0) 
             Poker->players[i]->type = PLAYER;
         else 
@@ -46,7 +48,7 @@ Game newGame()
 void dealCards(Player players[], Deck deck)
 {
     int cardnum = 0;
-    
+    deck = shuffleDeck();
     for (int i = 0; i < PLAYERS; i++)
     {
         for (int j = 0; j < HAND_SIZE; j++)

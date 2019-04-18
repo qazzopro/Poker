@@ -50,6 +50,7 @@ struct _game {
     Deck deck;
     Player players[PLAYERS];
     int pot;
+    int *raised;
 };
 
 typedef struct _game *Game; 

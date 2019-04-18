@@ -39,7 +39,6 @@ Deck shuffleDeck()
         deck[i] = i;
     }
     
-    
     for (int i = DECK_SIZE - 1; i > 0; i--) 
     {
         // Pick a random index from 0..i

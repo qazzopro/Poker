@@ -5,17 +5,30 @@
 
 #include "Computer.h"
 
-void compTurn(Player cpu, Streets street, int call, int position)
+int compTurn(Player cpu, Streets street, int *call, int *raised, int position)
 {
-    /*if (street == PREFLOP && call == 0) // Decide to open
+    // ALL IN
+    
+    if (*raised == 0) // BET ALL IN
+    {        
+        cpu->action = ALL_IN;
+        printf("He alls in $%d!\n", cpu->stack);
+        *raised = cpu->stack - *call;
+        return cpu->stack; 
+    }
+    
+    else 
     {
-        if compOpen(cpu  
-*/}
+        cpu->action = ALL_IN;
+        printf("He alls in $%d!\n", cpu->stack);
+        return cpu->stack;
+    }
+}
 
 bool compOpen(Player cpu, int position)
 {
  //   if (position == UTG) 
     {}
-        
+      return false;  
 }
 
