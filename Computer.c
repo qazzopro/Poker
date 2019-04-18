@@ -7,14 +7,14 @@
 
 int compTurn(Player cpu, Streets street, int *call, int *raised, int position, int pot)
 {
-    /*if (street == PREFLOP) 
+    if (street == PREFLOP) 
     
         // If planning on opening
         if (*raised == 0 && pot == BIG_BLIND + SMALL_BLIND) 
         {
+          
             
-            
-        }*/
+        }
     
     if (*raised == 0) 
     {        
@@ -46,8 +46,10 @@ int compTurn(Player cpu, Streets street, int *call, int *raised, int position, i
 
 bool compOpen(Player cpu, int position)
 {
- //   if (position == UTG) 
-    {}
-      return false;  
+    if (position == UTG) {
+        if (cpu->type == TIGHT_REG 
+            || cpu->type == STANDARD_REG || cpu->type == LOOSE_REG)
+        {
+            }}
 }
 
