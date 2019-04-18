@@ -7,13 +7,12 @@
 
 #include "Deck.h"
 #include "Game.h"
+#include "Player.h"
 #include "Computer.h"
 
-static int unopened(Player players[]);
-static int folded(Player players[]);
-static int activePlayers(Player players[]);
-static int myTurn(Player me, int *call, int *raised);
+static int active(Player players[]);
 static int allIn(Player players[]);
+
 
 int main (void) 
 {
@@ -23,10 +22,11 @@ int main (void)
     
     while (1) 
     {
-        // Reset stack, pot and players' action
+        // Reset stack, pot, chips placed and players' action
         for (int i = 0; i < PLAYERS; i++) {
             Poker->players[i]->stack = BUY_IN;
             Poker->players[i]->action = UNOPENED;
+            Poker->players[i]->placed[0] = 0;
         }
         Poker->pot = 0;
         
@@ -34,17 +34,23 @@ int main (void)
         if (button + 1 == PLAYERS) 
         {
             Poker->players[0]->stack -= SMALL_BLIND;
+            Poker->players[0]->placed[0] = SMALL_BLIND;
             Poker->players[1]->stack -= BIG_BLIND;
+            Poker->players[1]->placed[0] = BIG_BLIND;
         }
         else if (button + 2 == PLAYERS) 
         {
             Poker->players[button+1]->stack -= SMALL_BLIND;
+            Poker->players[button+1]->placed[0] = SMALL_BLIND;
             Poker->players[0]->stack -= BIG_BLIND;
+            Poker->players[0]->placed[0] = BIG_BLIND;
         }
         else
         {
             Poker->players[button+1]->stack -= SMALL_BLIND;
+            Poker->players[button+1]->placed[0] = SMALL_BLIND;
             Poker->players[button+2]->stack -= BIG_BLIND;
+            Poker->players[button+2]->placed[0] = BIG_BLIND;
         }
         Poker->pot = BIG_BLIND + SMALL_BLIND;
         int *call = malloc(sizeof(int));
@@ -57,46 +63,49 @@ int main (void)
         // Show player cards
         printCard(Poker->players[0]->hand[0]);
         printCard(Poker->players[0]->hand[1]);
-        printf("\n\n");
+        printf("\n");
         
         // Preflop
         int turn = button + 3; // Who's turn
         if (button + 3 >= PLAYERS) turn -= PLAYERS;
-        while (unopened(Poker->players) != 0 || activePlayers(Poker->players) < (folded(Poker->players) + 1))
+        while (active(Poker->players) != 0)
         {
-            if (turn == 0)  
-            { // My turn
-                if (Poker->players[0]->action != FOLD 
-                    && Poker->players[0]->action != ALL_IN_CALL
-                    && Poker->players[0]->action != ALL_IN_RAISE)
-                {
-                    printf("Pot size is $%d\n", Poker->pot);
+            if (Poker->players[turn]->action != FOLD 
+                    && Poker->players[turn]->action != ALL_IN_CALL
+                    && Poker->players[turn]->action != ALL_IN_RAISE)
+            {
+            printf("Player %d's turn, with a stack of $%d and a pot of $%d.\n", turn + 1, Poker->players[turn]->stack, Poker->pot);
+                if (turn == 0)  
+                { // My turn
+                    printf("my turn.\n");
                     Poker->pot += myTurn(Poker->players[0], call, Poker->raised);
-                }
-            }                        
-            
-            else if (Poker->players[0]->action != FOLD 
-                    && Poker->players[0]->action != ALL_IN_CALL
-                    && Poker->players[0]->action != ALL_IN_RAISE)
-            { 
-                // Computer's turn
-                printf("Player %d's turn, with a stack of $%d and a pot of $%d.\n", turn + 1, Poker->players[turn]->stack, Poker->pot);
+                }                        
+                
+                else 
+                {
+                    // Computer's turn 
+                               
                 Poker->pot += compTurn(Poker->players[turn], PREFLOP, call, Poker->raised, calculatePosition(turn, button), Poker->pot); 
+                }
             }
-            
             
             if (Poker->players[turn]->action == BET 
                 || Poker->players[turn]->action == RAISE
                 || Poker->players[turn]->action == ALL_IN_RAISE)
             {
+                if (Poker->players[turn]->action == ALL_IN_RAISE ||
+                    Poker->players[turn]->action == ALL_IN_CALL)
+                    Poker->players[turn]->stack = 0;
+                
                 for (int i = 0; i < PLAYERS; i++)
                     if (i != turn && Poker->players[i]->action != ALL_IN_RAISE 
-                        && Poker->players[i]->action != ALL_IN_CALL)
-                        
-                        Poker->players[i]->action = UNOPENED;
+                        && Poker->players[i]->action != ALL_IN_CALL 
+                        && Poker->players[i]->action != UNOPENED
+                        && Poker->players[i]->action != FOLD) {
+                        Poker->players[i]->action = UNOPENED;}
             }
             turn++; 
-            if (turn == PLAYERS) turn = 0;
+            turn %= PLAYERS;
         }
         
         
@@ -104,7 +113,6 @@ int main (void)
         printCommunity(Poker->deck, FLOP);
         printf("\n\n");
         Poker->raised[0] = 0;
-        
         
         printf("The Turn\n");
         printCommunity(Poker->deck, TURN);
@@ -138,28 +146,24 @@ int main (void)
         // Move button
         button++;
         if (button == PLAYERS) button = 0;
-        exit(0);
     }
     destroyGame(Poker);
     
     return 0; 
 }
 
-static int unopened(Player players[])
+static int active(Player players[])
 {
     int active = 0;
     for (int i = 0; i < PLAYERS; i++)
-        if (players[i]->action == UNOPENED) active++;   
-        
+        if (players[i]->action == UNOPENED 
+            || players[i]->action == CALL 
+            || players[i]->action == BET
+            || players[i]->action == RAISE
+            || players[i]->action == CHECK) 
+            active++;   
+            
     return active;
-}
-static int folded(Player players[])
-{
-    int folded = 0;
-    for (int i = 0; i < PLAYERS; i++)
-        if (players[i]->action == UNOPENED) folded++; 
-        
-    return folded;
 }
 
 static int allIn(Player players[])
@@ -171,165 +175,3 @@ static int allIn(Player players[])
     return allin; 
     
 } 
-
-static int activePlayers(Player players[])
-{
-    int active = 0;
-    for (int i = 0; i < PLAYERS; i++)
-        if (players[i]->action != FOLD 
-            || players[i]->action == ALL_IN_CALL || players[i]->action == ALL_IN_RAISE) 
-            
-            active++;
-          
-    return active;
-}
-static int myTurn(Player me, int *call, int *raised)
-{
-    assert(*raised >= 0);
-    printf("Type number for action\n");
-    int action = -1;
-    printf("To call: %d.\n", *call);
-    if (me->stack <= *call) 
-    {
-        printf("0: CALL, 1: FOLD\n");
-        scanf("%d", &action);
-        while (action < 0 || action > 1)
-        {
-            printf("Invalid input, please enter correct input. 1\n");
-            scanf("%d", &action);
-        }
-        if (action == 1) action++;
-    }
-    
-    else if (*raised == 0) printf("0: CALL, 1: BET, 2: FOLD\n");
-    else printf("0: CALL, 1: RAISE, 2: FOLD\n");
-    if (action == -1) scanf("%d", &action); 
-    while (action > 2 || action < 0)
-    {
-        printf("Invalid input, please enter correct input. 2\n");
-        scanf("%d", &action);
-    }
-        
-    if (action == 2) 
-    {
-        me->action = FOLD;
-        printf("You fold.\n");      
-        return 0;  
-    }
-    
-    if (action == 0)
-    {
-        if (me->stack <= *call) 
-        {
-            me->action = ALL_IN_CALL;
-            printf("You all in $%d!\n", me->stack); 
-            return me->stack; 
-        }
-        else 
-        {
-            me->action = CALL;
-            printf("You call $%d!\n", *call);
-            me->stack -= *call;
-            return *call;
-        }
-    }
-    
-    if (action == 1) // Bet or Raise
-    {
-        int increase = 0;
-        if (*raised == 0) // Betting
-        {
-            if (me->stack <= 2 * *call) // Cannot even min bet
-            {
-                me->action = ALL_IN_RAISE;
-                printf("You all in $%d!\n", me->stack);
-                *raised = *call;
-                *call = 2 * *call;
-                return me->stack; 
-            }
-            
-            printf("Bet how much?\n");
-            scanf("%d", &increase);
-            while (increase < 2 * *call || increase % BIG_BLIND != 0)
-            {
-                if (increase < 2 * *call)
-                {
-                    printf("Please bet at least the minimum of %d.\n", 2 * *call);
-                    scanf("%d", &increase);
-                }
-                
-                if (increase % BIG_BLIND != 0)
-                {
-                    printf("Please bet a multiple of the BB.\n");
-                    scanf("%d", &increase);
-                }
-            }
-            
-            if (increase >= me->stack)
-            {
-                me->action = ALL_IN_RAISE;
-                printf("You all in $%d!\n", me->stack);                
-                *raised = me->stack - *call;
-                *call = increase;
-                return me->stack; 
-            }
-            
-            else 
-            {
-                me->action = BET;
-                printf("You bet $%d!\n", increase);
-                *raised = increase - *call;
-                *call = increase;             
-                return increase;
-            }
-        }
-        
-        else // Raising
-        {
-            if (me->stack <= *call + 2 * *raised) // Can't even min raise
-            {
-                me->action = ALL_IN_RAISE;    
-                printf("You all in $%d!\n", me->stack);
-                *call = increase = *call + 2 * *raised;
-                return me->stack;
-            }
-            
-            printf("Raise how much?\n");
-            scanf("%d", &increase);
-            while (increase < *call + 2 * *raised || increase - *call % BIG_BLIND != 0)
-            {
-                if (increase < *call + 2 * (*raised))
-                {
-                    printf("Please raise to a minimum of $%d.\n", *call + 2 * (*raised));
-                    scanf("%d", &increase);
-                }
-                
-                if (increase - *call % BIG_BLIND != 0)
-                {
-                    printf("Please raise to a multiple of the BB.\n");
-                    scanf("%d", &increase);
-                } 
-            }
-            
-            if (increase >= me->stack)
-            {
-                me->action = ALL_IN_RAISE;
-                printf("You all in $%d!\n", me->stack);  
-                *raised = me->stack - *call;
-                *call = increase;
-                return me->stack; 
-            }
-            
-            else 
-            {
-                me->action = RAISE;
-                printf("You raised to $%d!\n", increase);
-                *raised = increase - *call;
-                *call = increase;
-                return increase;
-            }
-        }
-    }
-    printf("FUCKED UP!\n");
-    exit(0);
-}

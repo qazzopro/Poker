@@ -32,7 +32,6 @@ typedef enum {
     AGGRO_FISH,
     AGGRO_WHALE,
 } PlayerType;
-     
 
 struct _player 
 {
@@ -40,6 +39,7 @@ struct _player
     int rank;
     int best[5];
     int stack;
+    int *placed;
     Actions action;
     PlayerType type; 
 };

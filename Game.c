@@ -21,14 +21,16 @@ Game newGame()
     Game Poker = malloc(sizeof(struct _game));
     Poker->deck = shuffleDeck();
     srand(time(0));
+    Poker->raised = malloc(sizeof(int));
+    Poker->raised[0] = 0;
     
     for (int i = 0; i < PLAYERS; i++)
     {
         Poker->players[i] = malloc(sizeof(struct _player));
         Poker->players[i]->stack = BUY_IN;
         Poker->players[i]->action = UNOPENED;
-        Poker->raised = malloc(sizeof(int));
-        Poker->raised[0] = 0;
+        Poker->players[i]->placed = malloc(sizeof(int));
+        Poker->players[i]->placed[0] = 0;
         if (i == 0) 
             Poker->players[i]->type = PLAYER;
         else 
