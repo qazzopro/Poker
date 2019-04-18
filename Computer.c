@@ -5,21 +5,22 @@
 
 #include "Computer.h"
 
-int compTurn(Player cpu, Streets street, int *call, int *raised, int position)
+int compTurn(Player cpu, Streets street, int *call, int *raised, int position, int pot)
 {
     // ALL IN
     
     if (*raised == 0) // BET ALL IN
     {        
-        cpu->action = ALL_IN;
+        cpu->action = ALL_IN_RAISE;
         printf("He alls in $%d!\n", cpu->stack);
         *raised = cpu->stack - *call;
+        *call = cpu->stack;
         return cpu->stack; 
     }
     
     else 
     {
-        cpu->action = ALL_IN;
+        cpu->action = ALL_IN_CALL;
         printf("He alls in $%d!\n", cpu->stack);
         return cpu->stack;
     }

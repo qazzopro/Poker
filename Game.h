@@ -18,7 +18,7 @@
 
 #include "Deck.h"
 
-typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD, ALL_IN } Actions;
+typedef enum { UNOPENED, CHECK, CALL, BET, RAISE, FOLD, ALL_IN_CALL, ALL_IN_RAISE } Actions;
 
 typedef enum { 
     PLAYER, 

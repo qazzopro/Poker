@@ -5,7 +5,7 @@
 #include "Game.h"
 
 // Calculate Computer's turn
-int compTurn(Player cpu, Streets street, int *call, int *raised, int position);
+int compTurn(Player cpu, Streets street, int *call, int *raised, int position, int pot);
 
 bool compOpen(Player cpu, int position);
 
